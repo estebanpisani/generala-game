@@ -12,16 +12,16 @@
 
 int main(){
     int dados[5];
-    int categorias[11] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    int categorias[11] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     int cantidadJugadores = 0;
-    char jugador1[] = "";
-    char jugador2[] = "";
+    char jugador1[20] = "";
+    char jugador2[20] = "";
 
     printf("¡Hola!, bienvenido al juego de la Generala!\n");
     do{
         printf("Elija la cantidad de jugadores (1 o 2):\n");
         scanf("%d", &cantidadJugadores);
-        if(cantidadJugadores != 1 || cantidadJugadores != 2){
+        if(cantidadJugadores != 1 && cantidadJugadores != 2){
             printf("¡Solo pueden jugar 1 o 2 jugadores!\n");
             printf("Inténtelo de nuevo.\n");
         }
@@ -30,13 +30,14 @@ int main(){
     for(int i=1; i<=cantidadJugadores; i++){
         printf("Ingrese el nombre del jugador %d:\n", i);
         if(i==1){
-            scanf("%c", &jugador1);
-        }
-        if(i==2){
-            scanf("%c", &jugador2);
+            scanf("%s",jugador1);
+            printf("Bienvenido %s!\n", jugador1);
+        } else{
+            scanf("%s",jugador2);
+            printf("Bienvenido %s!\n", jugador2);           
         }
     }
-    printf("A continuación el jugador tirará los 5 dados por primera vez.\n");
+    printf("A continuación %s tirará los 5 dados por primera vez.\n", jugador1);
     //do while turno<=11
     //Turno 1: 
     //
