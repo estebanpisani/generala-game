@@ -61,6 +61,7 @@ int tieneNumero(int dados[], int numero){
     return (cantidad > 0);
 }
 
+//TODO Full
 int tieneFull(int dados[]){
     int cantidad = 0;
     for (int i = 0; i < DADOS_MAX; i++)
@@ -70,25 +71,43 @@ int tieneFull(int dados[]){
 }
 
 int tienePoker(int dados[]){
-    int cantidad = 0;
-    for (int i = 0; i < DADOS_MAX; i++)
+    int cuenta = 0;
+
+    for (int j = 0; j <= 1; j++)
     {
+        for (int i = 0; i < DADOS_MAX; i++)
+        {
+            if(j==i){
+                continue;
+            }
+            if(dados[j] == dados[i]){
+                cuenta++;
+            }
+            if(cuenta == 3){
+                break;
+            }
+        }
+        if(cuenta == 3){
+            break;
+        } else {
+            cuenta = 0;
+        }
     }
-    return (cantidad > 0);
+    return cuenta == 3;
 }
 
 int tieneGenerala(int dados[]){
-    int iguales = 0;
+    int cuenta = 0;
     for (int i = 0; i < DADOS_MAX-1; i++)
     {
         if(dados[i] == dados[i+1]){
-            iguales++;
+            cuenta++;
             continue;
         } else {
             break;
         }
     }
-    return iguales == 4;
+    return cuenta == 4;
 }
 
 int tieneEscalera(int dados[]){
@@ -200,7 +219,7 @@ int main(){
     } while(lanzamientosRestantes>0 && cantidadARelanzar!=0);
 
     separador();
-    printf("Ahora vamos a chequear si esto anda:\n");
+    printf("Ahora vamos a chequear si todo esto anda:\n");
     separador();
     printf("- Generala:\n");
     if(tieneGenerala(dadosActuales)){
@@ -213,6 +232,12 @@ int main(){
         printf("Tiene escalera.\n");
     } else{
         printf("No tiene escalera.\n");
+    }
+    printf("- Poker:\n");
+    if(tienePoker(dadosActuales)){
+        printf("Tiene poker.\n");
+    } else{
+        printf("No tiene poker.\n");
     }
     printf("- Números:\n");
     for (int i = 1; i <= 6; i++)
