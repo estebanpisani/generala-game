@@ -71,10 +71,6 @@ int tieneFull(int dados[]){
     return condiciones == 2;
 }
 
-//Contar números
-//Si > 1 cantidad <3
-//
-
 int tienePoker(int dados[]){
     int cuenta = 0;
 
@@ -136,7 +132,6 @@ int tieneEscalera(int dados[]){
     3) Anotarse: 6 al 3
     4) Anotarse: 12 al 4
     5) Anotarse: 0 al 6
-    //ya tiene un valor en 5 por eso no da opción para ese número
     6) Tacharse: Escalera
     7) Anotarse: Full
     8) Tacharse: Poker
@@ -179,10 +174,11 @@ void mostrarCategorias(int dados[]){
         cuenta++;
     }
     if (tieneGenerala(dados)) {
-        printf("%d) Anotarse Generala.\n", cuenta);  
+        printf("%d) Anotarse Generala.\n", cuenta);
+        cuenta++;
     }
     if (tieneGenerala(dados)) {
-        printf("%d) Anotarse Generala Doble.\n", cuenta);  
+        printf("%d) Anotarse Generala Doble.\n", cuenta);
     }
 }
 
