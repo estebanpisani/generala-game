@@ -42,14 +42,6 @@ void ordenarDados(int dados[]){
     }
 }
 
-// CATEGORÍAS
-// 0 - 5 = 1 - 6
-// 6 = Escalera
-// 7 = Full
-// 8 = Póker
-// 9 = Generala
-// 10 = Generala Doble
-
 int contarNumero(int dados[], int numero){
     int cantidad = 0;
     for (int i = 0; i < DADOS_MAX; i++)
@@ -138,9 +130,64 @@ int tieneEscalera(int dados[]){
     return escalera == 4;
 }
 
+/*
+    1) Anotarse: 0 al 1
+    2) Anotarse: 0 al 2
+    3) Anotarse: 6 al 3
+    4) Anotarse: 12 al 4
+    5) Anotarse: 0 al 6
+    //ya tiene un valor en 5 por eso no da opción para ese número
+    6) Tacharse: Escalera
+    7) Anotarse: Full
+    8) Tacharse: Poker
+    9) Tacharse: Doble Generala
+*/
+
+// CATEGORÍAS
+// 0 - 5 = 1 - 6
+// 6 = Escalera
+// 7 = Full
+// 8 = Póker
+// 9 = Generala
+// 10 = Generala Doble
+
+void mostrarCategorias(int dados[]){
+    int cuenta = 0;
+    int categorias[11] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+
+    for (int i = 1; i < 7; i++)
+    {
+        printf("%d) Anotarse: ", i);
+        printf("%d al ", (i * contarNumero(dados, i)));
+        printf("%d \n", i);
+        cuenta++;
+    }
+
+    cuenta++;
+
+    if (tieneEscalera(dados))
+    {
+        printf("%d) Anotarse Escalera.\n", cuenta);
+        cuenta++;
+    }
+    if (tieneFull(dados)) {
+        printf("%d) Anotarse Full.\n", cuenta);
+        cuenta++;
+    }
+    if (tienePoker(dados)) {
+        printf("%d) Anotarse Poker.\n", cuenta);
+        cuenta++;
+    }
+    if (tieneGenerala(dados)) {
+        printf("%d) Anotarse Generala.\n", cuenta);  
+    }
+    if (tieneGenerala(dados)) {
+        printf("%d) Anotarse Generala Doble.\n", cuenta);  
+    }
+}
+
 
 int main(){
-    //int categorias[11] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
     int cantidadJugadores = 0;
     int turnoJugador1 = 1;
     int turnoJugador2 = 1;
@@ -232,34 +279,9 @@ int main(){
     } while(lanzamientosRestantes>0 && cantidadARelanzar!=0);
 
     separador();
-    printf("Ahora vamos a chequear si todo esto anda:\n");
-    separador();
-    if(tieneGenerala(dadosActuales)){
-        printf("Tiene generala.\n");
-    } else{
-        printf("No tiene generala.\n");
-    }
-    if(tieneEscalera(dadosActuales)){
-        printf("Tiene escalera.\n");
-    } else{
-        printf("No tiene escalera.\n");
-    }
-    if(tienePoker(dadosActuales)){
-        printf("Tiene poker.\n");
-    } else{
-        printf("No tiene poker.\n");
-    }
-    if(tieneFull(dadosActuales)){
-        printf("Tiene Full\n");
-    } else{
-        printf("No tiene Full.\n");
-    }
-    printf("- Números:\n");
-    for (int i = 1; i <= 6; i++)
-    {
-        printf("Hay %d n°%d.\n", contarNumero(dadosActuales, i), i);
-    }
-    
+    printf("¿Qué desea hacer?:\n");
+    mostrarCategorias(dadosActuales);
+    printf("Todavía no se puede hacer nada.\n");
     printf("Fin.\n");
    
     return 0;
