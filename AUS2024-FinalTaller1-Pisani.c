@@ -50,7 +50,7 @@ void ordenarDados(int dados[]){
 // 9 = Generala
 // 10 = Generala Doble
 
-int tieneNumero(int dados[], int numero){
+int contarNumero(int dados[], int numero){
     int cantidad = 0;
     for (int i = 0; i < DADOS_MAX; i++)
     {
@@ -58,17 +58,30 @@ int tieneNumero(int dados[], int numero){
             cantidad++;
         }
     }
-    return (cantidad > 0);
+    return cantidad;
 }
 
 //TODO Full
 int tieneFull(int dados[]){
     int cantidad = 0;
+    int condiciones = 0;
     for (int i = 0; i < DADOS_MAX; i++)
     {
+        cantidad = contarNumero(dados, i);
+        if(cantidad == 2){
+            condiciones++;
+        }
+        if(cantidad == 3){
+            condiciones++;
+        }
+        cantidad = 0;
     }
-    return (cantidad > 0);
+    return condiciones == 2;
 }
+
+//Contar números
+//Si > 1 cantidad <3
+//
 
 int tienePoker(int dados[]){
     int cuenta = 0;
@@ -221,32 +234,30 @@ int main(){
     separador();
     printf("Ahora vamos a chequear si todo esto anda:\n");
     separador();
-    printf("- Generala:\n");
     if(tieneGenerala(dadosActuales)){
         printf("Tiene generala.\n");
     } else{
         printf("No tiene generala.\n");
     }
-    printf("- Escalera:\n");
     if(tieneEscalera(dadosActuales)){
         printf("Tiene escalera.\n");
     } else{
         printf("No tiene escalera.\n");
     }
-    printf("- Poker:\n");
     if(tienePoker(dadosActuales)){
         printf("Tiene poker.\n");
     } else{
         printf("No tiene poker.\n");
     }
+    if(tieneFull(dadosActuales)){
+        printf("Tiene Full\n");
+    } else{
+        printf("No tiene Full.\n");
+    }
     printf("- Números:\n");
     for (int i = 1; i <= 6; i++)
     {
-        if(tieneNumero(dadosActuales, i)){
-            printf("Tiene %d.\n", i);
-        } else {
-            printf("No tiene %d.\n", i);
-        }
+        printf("Hay %d n°%d.\n", contarNumero(dadosActuales, i), i);
     }
     
     printf("Fin.\n");
