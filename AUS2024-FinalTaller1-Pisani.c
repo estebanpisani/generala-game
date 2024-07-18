@@ -26,10 +26,92 @@ void separador(){
     printf("-------------------\n");
 }
 
+void ordenarDados(int dados[]){
+    int aux = 0;
+    for (int i = 0; i < DADOS_MAX-1; i++){
+        for (int j = 0; j < DADOS_MAX-1; j++)
+        {
+            if (dados[j]>dados[j+1])
+            {
+                aux = dados[j+1];
+                dados[j+1] = dados[j];
+                dados[j] = aux;
+            }
+        }
+        
+    }
+}
+
+// CATEGORÍAS
+// 0 - 5 = 1 - 6
+// 6 = Escalera
+// 7 = Full
+// 8 = Póker
+// 9 = Generala
+// 10 = Generala Doble
+
+int tieneNumero(int dados[], int numero){
+    int cantidad = 0;
+    for (int i = 0; i < DADOS_MAX; i++)
+    {
+        if(dados[i] == numero){
+            cantidad++;
+        }
+    }
+    return (cantidad > 0);
+}
+
+int tieneFull(int dados[]){
+    int cantidad = 0;
+    for (int i = 0; i < DADOS_MAX; i++)
+    {
+    }
+    return (cantidad > 0);
+}
+
+int tienePoker(int dados[]){
+    int cantidad = 0;
+    for (int i = 0; i < DADOS_MAX; i++)
+    {
+    }
+    return (cantidad > 0);
+}
+
+int tieneGenerala(int dados[]){
+    int iguales = 0;
+    for (int i = 0; i < DADOS_MAX-1; i++)
+    {
+        if(dados[i] == dados[i+1]){
+            iguales++;
+            continue;
+        } else {
+            break;
+        }
+    }
+    return iguales == 4;
+}
+
+int tieneEscalera(int dados[]){
+    ordenarDados(dados);
+    int escalera = 0;
+    for (int i = 0; i < DADOS_MAX-1; i++)
+    {
+        if(dados[i] == dados[i+1]-1){
+            escalera++;
+            continue;
+        } else {
+            break;
+        }
+    }
+    return escalera == 4;
+}
+
+
 int main(){
-    int categorias[11] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    //int categorias[11] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
     int cantidadJugadores = 0;
-    int turno = 1;
+    int turnoJugador1 = 1;
+    int turnoJugador2 = 1;
     int lanzamientosRestantes = LANZAMIENTOS_MAX;
     int cantidadARelanzar = 0;
     int dadosActuales[DADOS_MAX];
@@ -57,7 +139,7 @@ int main(){
         }
     }
 
-    //TODO lógica turnos (for doble)
+    //TODO lógica Jugador1s (for doble)
     //LOOP
     //Si turno==1
     printf("A continuación %s tirará los 5 dados por primera vez.\n", jugador1);
@@ -73,7 +155,7 @@ int main(){
        printf("Cuántos dados desea relanzar? (0 = ninguno)\n");
        scanf("%d", &cantidadARelanzar);
 
-        if(cantidadARelanzar<0 || cantidadARelanzar>5){
+        if(cantidadARelanzar<0 || cantidadARelanzar>DADOS_MAX){
             printf("Ingrese una cantidad correcta!! (0 a 5)\n");
             continue;
         }
@@ -117,27 +199,32 @@ int main(){
        }
     } while(lanzamientosRestantes>0 && cantidadARelanzar!=0);
 
+    separador();
+    printf("Ahora vamos a chequear si esto anda:\n");
+    separador();
+    printf("- Generala:\n");
+    if(tieneGenerala(dadosActuales)){
+        printf("Tiene generala.\n");
+    } else{
+        printf("No tiene generala.\n");
+    }
+    printf("- Escalera:\n");
+    if(tieneEscalera(dadosActuales)){
+        printf("Tiene escalera.\n");
+    } else{
+        printf("No tiene escalera.\n");
+    }
+    printf("- Números:\n");
+    for (int i = 1; i <= 6; i++)
+    {
+        if(tieneNumero(dadosActuales, i)){
+            printf("Tiene %d.\n", i);
+        } else {
+            printf("No tiene %d.\n", i);
+        }
+    }
+    
     printf("Fin.\n");
    
-    //while turno<=11
-    //Turno 1: 
-    //
-        //while (lanzamiento i=1; i++, i<=3)
-        //Mostrar resultados según indice = dado
-        //¿Cuántos dados desea arrojar? x 2
-        //  - 0 (Pasar y anotar categoría) (break)
-        //  - 1-5 (cantidadDados) (for)
-        //
-        // Ingresar Índice de dados (1 a 5) (guardar en array dadosSelect)
-        // Repeat while
-    //Evaluando categorías...
-    //Evaluar categorías posibles
-    //switch
-    //
-
-    
-
-
-
     return 0;
 }
