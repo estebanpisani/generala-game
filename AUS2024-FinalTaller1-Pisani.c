@@ -138,48 +138,75 @@ int tieneEscalera(int dados[]){
     9) Tacharse: Doble Generala
 */
 
-// CATEGORÍAS
-// 0 - 5 = 1 - 6
-// 6 = Escalera
-// 7 = Full
-// 8 = Póker
-// 9 = Generala
-// 10 = Generala Doble
 
-void mostrarCategorias(int dados[]){
-    int cuenta = 0;
-    int categorias[11] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
-    for (int i = 1; i < 7; i++)
+void mostrarCategorias(int dados[], int categorias[]){
+    int cuenta = 1;
+
+    for (int i = 0; i < 6; i++)
     {
-        printf("%d) Anotarse: ", i);
-        printf("%d al ", (i * contarNumero(dados, i)));
-        printf("%d \n", i);
-        cuenta++;
+        if(!categorias[i]){
+            printf("%d) Anotarse: ", cuenta);
+            printf("%d al ", (i+1 * contarNumero(dados, i+1)));
+            printf("%d \n", i+1);
+            cuenta++;
+        }
     }
 
-    cuenta++;
-
-    if (tieneEscalera(dados))
+    for (int i = 6; i < 11; i++)
     {
-        printf("%d) Anotarse Escalera.\n", cuenta);
-        cuenta++;
+        if (!categorias[i]){
+            printf("%d) ", cuenta);
+            switch (i) {
+                case 6:
+                    if(tieneEscalera(dados)){
+                        printf("Anotarse ");
+                    } else {
+                        printf("Tacharse ");
+                    }
+                    printf("Escalera.\n");
+                break;
+                case 7:
+                    if (tieneFull(dados)) {
+                        printf("Anotarse ");
+                    } else {
+                        printf("Tacharse ");
+                    }
+                    printf("Full.\n");
+                break;
+                case 8:
+                    if (tienePoker(dados)) {
+                        printf("Anotarse ");
+                    } else {
+                        printf("Tacharse ");
+                    }
+                    printf("Póker.\n");
+                break;
+                case 9:
+                    if (tieneGenerala(dados)) {
+                        printf("Anotarse ");
+                    } else {
+                        printf("Tacharse ");
+                    }
+                    printf("Generala.\n");
+                break;
+                case 10:
+                    if(tieneGenerala(dados)){
+                        printf("Anotarse ");
+                    } else {
+                        printf("Tacharse ");
+                    }
+                    printf("Generala Doble.\n");
+                break;                
+                default:
+                    break;
+            }
+                       
+            cuenta++;
+        }
+
     }
-    if (tieneFull(dados)) {
-        printf("%d) Anotarse Full.\n", cuenta);
-        cuenta++;
-    }
-    if (tienePoker(dados)) {
-        printf("%d) Anotarse Poker.\n", cuenta);
-        cuenta++;
-    }
-    if (tieneGenerala(dados)) {
-        printf("%d) Anotarse Generala.\n", cuenta);
-        cuenta++;
-    }
-    if (tieneGenerala(dados)) {
-        printf("%d) Anotarse Generala Doble.\n", cuenta);
-    }
+    
 }
 
 
@@ -192,6 +219,19 @@ int main(){
     int dadosActuales[DADOS_MAX];
     char jugador1[21] = "";
     char jugador2[21] = "";
+    int opcion = 0;
+    // CATEGORÍAS (índices)
+    // 0 - 5 = 1 - 6
+    // 6 = Escalera
+    // 7 = Full
+    // 8 = Póker
+    // 9 = Generala
+    // 10 = Generala Doble
+    // ESTADOS (valor)
+    // 0 - Disponible
+    // 1 - Usado
+    int categorias[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
 
     printf("¡Hola!, bienvenido al juego de la Generala!\n");
     do{
@@ -275,9 +315,9 @@ int main(){
     } while(lanzamientosRestantes>0 && cantidadARelanzar!=0);
 
     separador();
-    printf("¿Qué desea hacer?:\n");
+    printf("Si esto andara, podrías hacer todo esto:\n");
     mostrarCategorias(dadosActuales);
-    printf("Todavía no se puede hacer nada.\n");
+    printf("Pero todavía no se puede hacer nada.\n");
     printf("Fin.\n");
    
     return 0;
