@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <time.h>
 
-//Valores de puntajes de cada categoría
+// Valores de puntajes de cada categoría
 #define ESCALERA_VALUE 35
 #define FULL_VALUE 50
 #define POKER_VALUE 75
@@ -12,58 +12,68 @@
 #define TURNOS_MAX 11
 #define DADOS_MAX 5
 
-//Funciones útiles
-int arrojarDado(){
+// Funciones útiles
+void anotarCategoria(int categoria, int categoriasPuntajes, puntaje);
+
+int arrojarDado()
+{
     int dadoRandom = rand() % (7);
     return dadoRandom;
 }
 
-void mostrarDado(int dadoId, int dado){
+void mostrarDado(int dadoId, int dado)
+{
     printf("- Dado %d: %d \n", dadoId, dado);
 }
 
-void separador(){
+void separador()
+{
     printf("-------------------\n");
 }
 
-void ordenarDados(int dados[]){
+void ordenarDados(int dados[])
+{
     int aux = 0;
-    for (int i = 0; i < DADOS_MAX-1; i++){
-        for (int j = 0; j < DADOS_MAX-1; j++)
+    for (int i = 0; i < DADOS_MAX - 1; i++)
+    {
+        for (int j = 0; j < DADOS_MAX - 1; j++)
         {
-            if (dados[j]>dados[j+1])
+            if (dados[j] > dados[j + 1])
             {
-                aux = dados[j+1];
-                dados[j+1] = dados[j];
+                aux = dados[j + 1];
+                dados[j + 1] = dados[j];
                 dados[j] = aux;
             }
         }
-        
     }
 }
 
-int contarNumero(int dados[], int numero){
+int contarNumero(int dados[], int numero)
+{
     int cantidad = 0;
     for (int i = 0; i < DADOS_MAX; i++)
     {
-        if(dados[i] == numero){
+        if (dados[i] == numero)
+        {
             cantidad++;
         }
     }
     return cantidad;
 }
 
-//TODO Full
-int tieneFull(int dados[]){
+int tieneFull(int dados[])
+{
     int cantidad = 0;
     int condiciones = 0;
     for (int i = 0; i < DADOS_MAX; i++)
     {
         cantidad = contarNumero(dados, i);
-        if(cantidad == 2){
+        if (cantidad == 2)
+        {
             condiciones++;
         }
-        if(cantidad == 3){
+        if (cantidad == 3)
+        {
             condiciones++;
         }
         cantidad = 0;
@@ -71,55 +81,70 @@ int tieneFull(int dados[]){
     return condiciones == 2;
 }
 
-int tienePoker(int dados[]){
+int tienePoker(int dados[])
+{
     int cuenta = 0;
 
     for (int j = 0; j <= 1; j++)
     {
         for (int i = 0; i < DADOS_MAX; i++)
         {
-            if(j==i){
+            if (j == i)
+            {
                 continue;
             }
-            if(dados[j] == dados[i]){
+            if (dados[j] == dados[i])
+            {
                 cuenta++;
             }
-            if(cuenta == 3){
+            if (cuenta == 3)
+            {
                 break;
             }
         }
-        if(cuenta == 3){
+        if (cuenta == 3)
+        {
             break;
-        } else {
+        }
+        else
+        {
             cuenta = 0;
         }
     }
     return cuenta == 3;
 }
 
-int tieneGenerala(int dados[]){
+int tieneGenerala(int dados[])
+{
     int cuenta = 0;
-    for (int i = 0; i < DADOS_MAX-1; i++)
+    for (int i = 0; i < DADOS_MAX - 1; i++)
     {
-        if(dados[i] == dados[i+1]){
+        if (dados[i] == dados[i + 1])
+        {
             cuenta++;
             continue;
-        } else {
+        }
+        else
+        {
             break;
         }
     }
     return cuenta == 4;
 }
 
-int tieneEscalera(int dados[]){
+int tieneEscalera(int dados[])
+{
     ordenarDados(dados);
     int escalera = 0;
-    for (int i = 0; i < DADOS_MAX-1; i++)
+    for (int i = 0; i < DADOS_MAX - 1; i++)
     {
-        if(dados[i] == dados[i+1]-1){
+        if (dados[i] == dados[i + 1] - 1)
+        {
             escalera++;
             continue;
-        } else {
+        }
+        else
+        {
             break;
         }
     }
@@ -138,79 +163,133 @@ int tieneEscalera(int dados[]){
     9) Tacharse: Doble Generala
 */
 
-
-
-void mostrarCategorias(int dados[], int categorias[]){
+void mostrarCategorias(int dados[], int categoriasUsadas[], int generalaDoble)
+{
     int cuenta = 1;
 
     for (int i = 0; i < 6; i++)
     {
-        if(!categorias[i]){
+        if (!categoriasUsadas[i])
+        {
             printf("%d) Anotarse: ", cuenta);
-            printf("%d al ", (i+1 * contarNumero(dados, i+1)));
-            printf("%d \n", i+1);
+            printf("%d al ", (i + 1 * contarNumero(dados, i + 1)));
+            printf("%d \n", i + 1);
             cuenta++;
         }
     }
 
     for (int i = 6; i < 11; i++)
     {
-        if (!categorias[i]){
+        if (!categoriasUsadas[i])
+        {
             printf("%d) ", cuenta);
-            switch (i) {
-                case 6:
-                    if(tieneEscalera(dados)){
-                        printf("Anotarse ");
-                    } else {
-                        printf("Tacharse ");
-                    }
-                    printf("Escalera.\n");
+            switch (i)
+            {
+            case 6:
+                if (tieneEscalera(dados))
+                {
+                    printf("Anotarse ");
+                }
+                else
+                {
+                    printf("Tacharse ");
+                }
+                printf("Escalera.\n");
                 break;
-                case 7:
-                    if (tieneFull(dados)) {
-                        printf("Anotarse ");
-                    } else {
-                        printf("Tacharse ");
-                    }
-                    printf("Full.\n");
+            case 7:
+                if (tieneFull(dados))
+                {
+                    printf("Anotarse ");
+                }
+                else
+                {
+                    printf("Tacharse ");
+                }
+                printf("Full.\n");
                 break;
-                case 8:
-                    if (tienePoker(dados)) {
-                        printf("Anotarse ");
-                    } else {
-                        printf("Tacharse ");
-                    }
-                    printf("Póker.\n");
+            case 8:
+                if (tienePoker(dados))
+                {
+                    printf("Anotarse ");
+                }
+                else
+                {
+                    printf("Tacharse ");
+                }
+                printf("Póker.\n");
                 break;
-                case 9:
-                    if (tieneGenerala(dados)) {
-                        printf("Anotarse ");
-                    } else {
-                        printf("Tacharse ");
-                    }
-                    printf("Generala.\n");
+            case 9:
+                if (tieneGenerala(dados))
+                {
+                    printf("Anotarse ");
+                }
+                else
+                {
+                    printf("Tacharse ");
+                }
+                printf("Generala.\n");
                 break;
-                case 10:
-                    if(tieneGenerala(dados)){
-                        printf("Anotarse ");
-                    } else {
-                        printf("Tacharse ");
-                    }
-                    printf("Generala Doble.\n");
-                break;                
-                default:
-                    break;
+            case 10:
+                if (tieneGenerala(dados) && generalaDoble)
+                {
+                    printf("Anotarse ");
+                }
+                else
+                {
+                    printf("Tacharse ");
+                }
+                printf("Generala Doble.\n");
+                break;
+            default:
+                break;
             }
-                       
             cuenta++;
         }
-
     }
-    
 }
 
+void procesarCategorias(int dados[], int categoriasUsadas[], int categoriasPuntajes[], int generalaDoble, int opcion)
+{
+    int cuenta = 0;
+    for (int i = 0; i < 11; i++){
+        if (!categoriasUsadas[i]){
+            cuenta++;
+            if (cuenta == opcion){
+                switch (i){
+                case i<6:
+                    anotarCategoria(i, categoriasPuntajes, (contarNumero(dados, i+1) * (i+1)));
+                    categoriasUsadas[i] == 1;
+                    break;
+                case 6:
+                    anotarCategoria(i, categoriasPuntajes, ESCALERA_VALUE);
+                    categoriasUsadas[i] == 1;
+                    break;
+                case 7:
+                    anotarCategoria(i, categoriasPuntajes, FULL_VALUE);
+                    categoriasUsadas[i] == 1;
+                    break;
+                case 8:
+                    anotarCategoria(i, categoriasPuntajes, POKER_VALUE);
+                    categoriasUsadas[i] == 1;
+                    break;
+                case 9:
+                    anotarCategoria(i, categoriasPuntajes, GENERALA_VALUE);
+                    categoriasUsadas[i] == 1;
+                    tieneGenerala == 1;
+                    break;
+                case 10:
+                    anotarCategoria(i, categoriasPuntajes, GENERALA_DOBLE_VALUE);
+                    categoriasUsadas[i] == 1;
+                default:
+                    break;
+                }
+            }
+        }
+    }
+}
 
-int main(){
+int main()
+{
     int cantidadJugadores = 0;
     int turnoJugador1 = 1;
     int turnoJugador2 = 1;
@@ -220,6 +299,9 @@ int main(){
     char jugador1[21] = "";
     char jugador2[21] = "";
     int opcion = 0;
+    // 0 - No puede hacer generala doble.
+    // 1 - Puede hacer generala Doble.
+    int generalaDoble = 0;
     // CATEGORÍAS (índices)
     // 0 - 5 = 1 - 6
     // 6 = Escalera
@@ -230,95 +312,116 @@ int main(){
     // ESTADOS (valor)
     // 0 - Disponible
     // 1 - Usado
-    int categorias[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
+    int categoriasUsadas[11];
+    int categoriasPuntajes[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     printf("¡Hola!, bienvenido al juego de la Generala!\n");
-    do{
+    do
+    {
         printf("Elija la cantidad de jugadores (1 o 2):\n");
         scanf("%d", &cantidadJugadores);
-        if(cantidadJugadores != 1 && cantidadJugadores != 2){
+        if (cantidadJugadores != 1 && cantidadJugadores != 2)
+        {
             printf("¡Solo pueden jugar 1 o 2 jugadores!\n");
             printf("Inténtelo de nuevo.\n");
         }
-    } while(cantidadJugadores != 1 && cantidadJugadores != 2);
+    } while (cantidadJugadores != 1 && cantidadJugadores != 2);
 
-    for(int i=1; i<=cantidadJugadores; i++){
+    for (int i = 1; i <= cantidadJugadores; i++)
+    {
         printf("Ingrese el nombre del jugador %d:\n", i);
-        if(i==1){
-            scanf("%s",jugador1);
+        if (i == 1)
+        {
+            scanf("%s", jugador1);
             printf("Bienvenido %s!\n", jugador1);
-        } else{
-            scanf("%s",jugador2);
-            printf("Bienvenido %s!\n", jugador2);           
+        }
+        else
+        {
+            scanf("%s", jugador2);
+            printf("Bienvenido %s!\n", jugador2);
         }
     }
 
-    //TODO lógica Jugador1s (for doble)
-    //LOOP
-    //Si turno==1
+    // TODO lógica Jugador1s (for doble)
+    // LOOP
+    // Si turno==1
     printf("A continuación %s tirará los 5 dados por primera vez.\n", jugador1);
     printf("Arrojando dados...\n");
     for (int i = 0; i < DADOS_MAX; i++)
     {
         dadosActuales[i] = arrojarDado();
-        mostrarDado(i+1, dadosActuales[i]);
+        mostrarDado(i + 1, dadosActuales[i]);
     }
     lanzamientosRestantes--;
     printf("Lanzamientos restantes: %d \n", lanzamientosRestantes);
-    do{
-       printf("Cuántos dados desea relanzar? (0 = ninguno)\n");
-       scanf("%d", &cantidadARelanzar);
+    do
+    {
+        printf("Cuántos dados desea relanzar? (0 = ninguno)\n");
+        scanf("%d", &cantidadARelanzar);
 
-        if(cantidadARelanzar<0 || cantidadARelanzar>DADOS_MAX){
+        if (cantidadARelanzar < 0 || cantidadARelanzar > DADOS_MAX)
+        {
             printf("Ingrese una cantidad correcta!! (0 a 5)\n");
             continue;
         }
 
-        if(cantidadARelanzar != 0){
-        if(cantidadARelanzar ==5){
-            printf("Relanzando todos los dados...\n");
-            for (int i = 0; i < DADOS_MAX; i++){
-                dadosActuales[i] = arrojarDado();
-            }   
-        } else {
-            separador();
-            printf("SELECCIONAR DADOS\n");
-            separador();
-            //Seleccionar dados
-            int dadosReemplazos[cantidadARelanzar];
-            for(int i=0; i<cantidadARelanzar; i++){
-                printf("Ingrese el número de dado que quiere relanzar (%d/%d) \n", i+1, cantidadARelanzar);
-                scanf("%d", &dadosReemplazos[i]);
-            }
-            //Reemplazar dados seleccionados
-            printf("Relanzando dados...\n");
-            for (int i = 0; i < (sizeof(dadosReemplazos)/ sizeof(dadosReemplazos[0])); i++)
-            {
-                dadosActuales[dadosReemplazos[i]-1] = arrojarDado();
-            }
-        }
-        separador();
-        //Mostrar dados actualizados
-        for (int i = 0; i < DADOS_MAX; i++)
+        if (cantidadARelanzar != 0)
         {
-            mostrarDado(i+1, dadosActuales[i]);
+            if (cantidadARelanzar == 5)
+            {
+                printf("Relanzando todos los dados...\n");
+                for (int i = 0; i < DADOS_MAX; i++)
+                {
+                    dadosActuales[i] = arrojarDado();
+                }
+            }
+            else
+            {
+                separador();
+                printf("SELECCIONAR DADOS\n");
+                separador();
+                // Seleccionar dados
+                int dadosReemplazos[cantidadARelanzar];
+                for (int i = 0; i < cantidadARelanzar; i++)
+                {
+                    printf("Ingrese el número de dado que quiere relanzar (%d/%d) \n", i + 1, cantidadARelanzar);
+                    scanf("%d", &dadosReemplazos[i]);
+                }
+                // Reemplazar dados seleccionados
+                printf("Relanzando dados...\n");
+                for (int i = 0; i < (sizeof(dadosReemplazos) / sizeof(dadosReemplazos[0])); i++)
+                {
+                    dadosActuales[dadosReemplazos[i] - 1] = arrojarDado();
+                }
+            }
+            separador();
+            // Mostrar dados actualizados
+            for (int i = 0; i < DADOS_MAX; i++)
+            {
+                mostrarDado(i + 1, dadosActuales[i]);
+            }
+            // Lanzamientos restantes:
+            lanzamientosRestantes--;
+            if (lanzamientosRestantes == 0)
+            {
+                printf("Ya no le quedan lanzamientos en este turno.\n");
+            }
+            else
+            {
+                printf("Lanzamientos restantes: %d \n", lanzamientosRestantes);
+            }
         }
-        //Lanzamientos restantes:
-        lanzamientosRestantes--;
-        if(lanzamientosRestantes == 0){
-            printf("Ya no le quedan lanzamientos en este turno.\n");
-        } else {
-            printf("Lanzamientos restantes: %d \n", lanzamientosRestantes);
-        }
-       }
-    } while(lanzamientosRestantes>0 && cantidadARelanzar!=0);
+    } while (lanzamientosRestantes > 0 && cantidadARelanzar != 0);
 
     separador();
-    printf("Si esto andara, podrías hacer todo esto:\n");
+    printf("Qué desea hacer?:");
     mostrarCategorias(dadosActuales);
+    scanf("%d", &opcion);
+    procesarCategorias(dadosActuales, categoriasUsadas, categoriasPuntajes, generalaDoble, opcion);
     printf("Pero todavía no se puede hacer nada.\n");
+    // Seleccionar categoría
+
     printf("Fin.\n");
-   
+
     return 0;
 }
