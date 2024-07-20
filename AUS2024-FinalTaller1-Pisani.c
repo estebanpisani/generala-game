@@ -13,11 +13,14 @@
 #define DADOS_MAX 5
 
 // Funciones útiles
-void anotarCategoria(int categoria, int categoriasPuntajes, puntaje);
+void anotarCategoria(int categoria, int categoriasPuntajes[], int puntaje){
+    printf("Anotando %d en categoria %d.\n", puntaje, categoria);
+    categoriasPuntajes[categoria] = puntaje;
+}
 
 int arrojarDado()
 {
-    int dadoRandom = rand() % (7);
+    int dadoRandom = (rand() % (6 - 1 + 1)) + 1;
     return dadoRandom;
 }
 
@@ -163,7 +166,7 @@ int tieneEscalera(int dados[])
     9) Tacharse: Doble Generala
 */
 
-void mostrarCategorias(int dados[], int categoriasUsadas[], int generalaDoble)
+void mostrarCategorias(int dados[], int categoriasUsadas[], int *generalaDoble)
 {
     int cuenta = 1;
 
@@ -172,7 +175,7 @@ void mostrarCategorias(int dados[], int categoriasUsadas[], int generalaDoble)
         if (!categoriasUsadas[i])
         {
             printf("%d) Anotarse: ", cuenta);
-            printf("%d al ", (i + 1 * contarNumero(dados, i + 1)));
+            printf("%d al ", (contarNumero(dados, i + 1) * (i+1)));
             printf("%d \n", i + 1);
             cuenta++;
         }
@@ -248,44 +251,43 @@ void mostrarCategorias(int dados[], int categoriasUsadas[], int generalaDoble)
     }
 }
 
-void procesarCategorias(int dados[], int categoriasUsadas[], int categoriasPuntajes[], int generalaDoble, int opcion)
+void procesarCategorias(int dados[], int categoriasUsadas[], int categoriasPuntajes[], int *generalaDoble, int opcion, int *puntuacionTotal)
 {
+    printf("Puntuación Total antes de anotar: %d\n", puntuacionTotal);
+    int puntaje = 0;
     int cuenta = 0;
     for (int i = 0; i < 11; i++){
         if (!categoriasUsadas[i]){
             cuenta++;
             if (cuenta == opcion){
                 switch (i){
-                case i<6:
-                    anotarCategoria(i, categoriasPuntajes, (contarNumero(dados, i+1) * (i+1)));
-                    categoriasUsadas[i] == 1;
-                    break;
-                case 6:
-                    anotarCategoria(i, categoriasPuntajes, ESCALERA_VALUE);
-                    categoriasUsadas[i] == 1;
-                    break;
-                case 7:
-                    anotarCategoria(i, categoriasPuntajes, FULL_VALUE);
-                    categoriasUsadas[i] == 1;
-                    break;
-                case 8:
-                    anotarCategoria(i, categoriasPuntajes, POKER_VALUE);
-                    categoriasUsadas[i] == 1;
-                    break;
-                case 9:
-                    anotarCategoria(i, categoriasPuntajes, GENERALA_VALUE);
-                    categoriasUsadas[i] == 1;
-                    tieneGenerala == 1;
-                    break;
-                case 10:
-                    anotarCategoria(i, categoriasPuntajes, GENERALA_DOBLE_VALUE);
-                    categoriasUsadas[i] == 1;
-                default:
-                    break;
-                }
+                    case 0 ... 5:
+                        puntaje = (contarNumero(dados, i+1) * (i+1));
+                        break;
+                    case 6:
+                        puntaje = ESCALERA_VALUE;
+                        break;
+                    case 7:
+                        puntaje = POKER_VALUE;
+                        break;
+                    case 8:
+                        puntaje = POKER_VALUE;
+                        break;
+                    case 9:
+                        puntaje = GENERALA_VALUE;
+                        break;
+                    case 10:
+                        puntaje = GENERALA_DOBLE_VALUE;
+                    default:
+                        break;
+                    }
+                anotarCategoria(i, categoriasPuntajes, puntaje);
+                categoriasUsadas[i] = 1;
+                puntuacionTotal += puntaje;
             }
         }
     }
+    printf("Puntuación Total después de anotar: %d\n", puntuacionTotal);
 }
 
 int main()
@@ -312,8 +314,10 @@ int main()
     // ESTADOS (valor)
     // 0 - Disponible
     // 1 - Usado
-    int categoriasUsadas[11];
+    int categoriasUsadas[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     int categoriasPuntajes[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    int puntuacionTotal = 100;
+    srand(time(0));
 
     printf("¡Hola!, bienvenido al juego de la Generala!\n");
     do
@@ -414,13 +418,26 @@ int main()
     } while (lanzamientosRestantes > 0 && cantidadARelanzar != 0);
 
     separador();
-    printf("Qué desea hacer?:");
-    mostrarCategorias(dadosActuales);
+    printf("Qué desea hacer?:\n");
+    mostrarCategorias(dadosActuales, categoriasUsadas, &generalaDoble);
     scanf("%d", &opcion);
-    procesarCategorias(dadosActuales, categoriasUsadas, categoriasPuntajes, generalaDoble, opcion);
-    printf("Pero todavía no se puede hacer nada.\n");
-    // Seleccionar categoría
-
+    procesarCategorias(dadosActuales, categoriasUsadas, categoriasPuntajes, &generalaDoble, opcion, &puntuacionTotal);
+    separador();
+    printf("Puntuación total: %d.\n", puntuacionTotal);
+    for (int i = 0; i < 11; i++)
+    {
+        printf("Categoria %d tiene %d puntos.\n", i, categoriasPuntajes[i]);
+    }
+    separador();
+    for (int i = 0; i < 11; i++)
+    {
+        printf("Categoria %d ", i);
+        if(categoriasUsadas[i]){
+            printf("Usada.\n");
+        } else {
+            printf("Libre.\n");
+        }
+    }
     printf("Fin.\n");
 
     return 0;
