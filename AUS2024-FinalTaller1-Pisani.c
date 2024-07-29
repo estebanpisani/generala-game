@@ -16,9 +16,10 @@
 #define LIBRE_VALUE 0
 
 // Funciones útiles
+
 void anotarCategoria(int categoria, int tablaPuntajes[], int puntaje)
 {
-    printf("Anotando %d en categoria %d.\n", puntaje, categoria);
+    printf("Anotando %d puntos.\n", puntaje);
     tablaPuntajes[categoria] = puntaje;
 }
 
@@ -68,7 +69,6 @@ int contarNumero(int dados[], int numero)
     return cantidad;
 }
 
-// REVISAR
 int tieneFull(int dados[])
 {
     int cantidad = 0;
@@ -162,6 +162,7 @@ int tieneEscalera(int dados[])
 
 void mostrarCategorias(int dados[], int categoriasUsadas[], int *generalaDoble)
 {
+    // TODO revisar y testear Generala Doble
     int cuenta = 1;
 
     for (int i = 0; i < 6; i++)
@@ -191,7 +192,6 @@ void mostrarCategorias(int dados[], int categoriasUsadas[], int *generalaDoble)
                 {
                     printf("Tacharse ");
                 }
-                printf("Escalera.\n");
                 break;
             case 7:
                 if (tieneFull(dados))
@@ -202,7 +202,6 @@ void mostrarCategorias(int dados[], int categoriasUsadas[], int *generalaDoble)
                 {
                     printf("Tacharse ");
                 }
-                printf("Full.\n");
                 break;
             case 8:
                 if (tienePoker(dados))
@@ -213,7 +212,6 @@ void mostrarCategorias(int dados[], int categoriasUsadas[], int *generalaDoble)
                 {
                     printf("Tacharse ");
                 }
-                printf("Póker.\n");
                 break;
             case 9:
                 if (tieneGenerala(dados))
@@ -224,7 +222,6 @@ void mostrarCategorias(int dados[], int categoriasUsadas[], int *generalaDoble)
                 {
                     printf("Tacharse ");
                 }
-                printf("Generala.\n");
                 break;
             case 10:
                 if (tieneGenerala(dados) && generalaDoble)
@@ -235,11 +232,12 @@ void mostrarCategorias(int dados[], int categoriasUsadas[], int *generalaDoble)
                 {
                     printf("Tacharse ");
                 }
-                printf("Generala Doble.\n");
                 break;
             default:
                 break;
             }
+            imprimirCategoria(i);
+            printf(".\n");
             cuenta++;
         }
     }
@@ -262,27 +260,32 @@ void procesarCategorias(int dados[], int categoriasUsadas[], int tablaPuntajes[]
                     puntaje = (contarNumero(dados, i + 1) * (i + 1));
                     break;
                 case 6:
-                    if(tieneEscalera(dados)){
+                    if (tieneEscalera(dados))
+                    {
                         puntaje = ESCALERA_VALUE;
                     }
                     break;
                 case 7:
-                    if(tieneFull(dados)){
+                    if (tieneFull(dados))
+                    {
                         puntaje = FULL_VALUE;
                     }
                     break;
                 case 8:
-                    if(tienePoker(dados)){
+                    if (tienePoker(dados))
+                    {
                         puntaje = POKER_VALUE;
                     }
                     break;
                 case 9:
-                    if(tieneGenerala(dados)){
+                    if (tieneGenerala(dados))
+                    {
                         puntaje = GENERALA_VALUE;
                     }
                     break;
                 case 10:
-                    if(tieneGenerala(dados) && generalaDoble){
+                    if (tieneGenerala(dados) && generalaDoble)
+                    {
                         puntaje = GENERALA_DOBLE_VALUE;
                     }
                     break;
@@ -305,6 +308,33 @@ int contarPuntos(int categorias[])
         puntuacion += categorias[i];
     }
     return puntuacion;
+}
+
+void imprimirCategoria(int index)
+{
+    switch (index)
+    {
+    case 0 ... 5:
+        printf("%d", index);
+        break;
+    case 6:
+        printf("ESCALERA");
+        break;
+    case 7:
+        printf("FULL");
+        break;
+    case 8:
+        printf("PÓKER");
+        break;
+    case 9:
+        printf("GENERALA");
+        break;
+    case 10:
+        printf("GENERALA DOBLE");
+        break;
+    default:
+        break;
+    }
 }
 
 int main()
@@ -374,13 +404,16 @@ int main()
         }
     }
 
-    //Inicio juego
+    // Inicio juego
     for (int i = 1; i <= (cantidadJugadores == 1 ? TURNOS_MAX : TURNOS_MAX_DOBLE); i++)
     {
         lanzamientosRestantes = LANZAMIENTOS_MAX;
-        if(turnoJugador1){
+        if (turnoJugador1)
+        {
             turnosPasadosJugador1++;
-        } else {
+        }
+        else
+        {
             turnosPasadosJugador2++;
         }
         printf("Juega %s:\n", turnoJugador1 ? jugador1 : jugador2);
@@ -393,7 +426,7 @@ int main()
             mostrarDado(i + 1, dadosActuales[i]);
         }
         lanzamientosRestantes--;
-        //OPCIONES
+        // OPCIONES
         do
         {
             printf("Cuántos dados desea relanzar? (0 = ninguno)\n");
@@ -446,7 +479,7 @@ int main()
                 {
                     mostrarDado(i + 1, dadosActuales[i]);
                 }
-                //Mostrar lanzamientos restantes
+                // Mostrar lanzamientos restantes
                 lanzamientosRestantes--;
                 if (lanzamientosRestantes == 0)
                 {
@@ -460,9 +493,12 @@ int main()
         } while (lanzamientosRestantes > 0 && cantidadARelanzar != 0);
 
         separador();
-        if(turnoJugador1){
+        if (turnoJugador1)
+        {
             mostrarCategorias(dadosActuales, categoriasUsadasJugador1, &generalaDobleJugador1);
-        } else {
+        }
+        else
+        {
             mostrarCategorias(dadosActuales, categoriasUsadasJugador2, &generalaDobleJugador2);
         }
         printf("\n¿Qué desea hacer?:\n");
@@ -470,43 +506,54 @@ int main()
         if (turnoJugador1)
         {
             procesarCategorias(dadosActuales, categoriasUsadasJugador1, tablaPuntajesJugador1, &generalaDobleJugador1, opcion);
-        } else {
+        }
+        else
+        {
             procesarCategorias(dadosActuales, categoriasUsadasJugador2, tablaPuntajesJugador2, &generalaDobleJugador2, opcion);
         }
-        
+
         separador();
-        //Cambio de turno
-        if(cantidadJugadores > 1){
+        // Cambio de turno
+        if (cantidadJugadores > 1)
+        {
             turnoJugador1 = turnoJugador1 ? 0 : 1;
         }
     }
-    
+
     puntuacionJugador1 = contarPuntos(tablaPuntajesJugador1);
     printf("Puntuación total de %s: %d.\n", jugador1, puntuacionJugador1);
     for (int i = 0; i < TURNOS_MAX; i++)
     {
-        printf("Categoria %d tiene %d puntos.\n", i, tablaPuntajesJugador1[i]);
+        printf("Categoria ");
+        imprimirCategoria(i);
+        printf(" tiene %d puntos.\n", tablaPuntajesJugador1[i]);
     }
     separador();
-    if(cantidadJugadores == 2){
+    if (cantidadJugadores == 2)
+    {
         separador();
         puntuacionJugador2 = contarPuntos(tablaPuntajesJugador2);
-        printf("Puntuación total de %s: %d.\n", jugador2, puntuacionJugador2);       
+        printf("Puntuación total de %s: %d.\n", jugador2, puntuacionJugador2);
         for (int i = 0; i < TURNOS_MAX; i++)
         {
             printf("Categoria %d tiene %d puntos.\n", i, tablaPuntajesJugador2[i]);
         }
         separador();
         printf("RESULTADO FINAL:\n");
-        if(puntuacionJugador1 > puntuacionJugador2){
+        if (puntuacionJugador1 > puntuacionJugador2)
+        {
             printf("El GANADOR es: %s. ¡Felicitaciones!\n", jugador1);
-        } else if(puntuacionJugador1 < puntuacionJugador2){
+        }
+        else if (puntuacionJugador1 < puntuacionJugador2)
+        {
             printf("El GANADOR es: %s. ¡Felicitaciones!\n", jugador2);
-        } else {
+        }
+        else
+        {
             printf("\n El resultado de la partida es EMPATE.\n");
         }
     }
-    
+
     printf("Fin.\n");
 
     return 0;
