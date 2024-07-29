@@ -72,21 +72,22 @@ int contarNumero(int dados[], int numero)
 int tieneFull(int dados[])
 {
     int cantidad = 0;
-    int condiciones = 0;
-    for (int i = 0; i < DADOS_MAX; i++)
+    int condicionDos = 0;
+    int condicionTres = 0;
+    for (int i = 1; i <= DADOS_MAX; i++)
     {
         cantidad = contarNumero(dados, i);
-        if (cantidad == 2)
+        if (cantidad == 2 && condicionDos == 0)
         {
-            condiciones++;
+            condicionDos = 1;
         }
         if (cantidad == 3)
         {
-            condiciones++;
+            condicionTres = 1;
         }
         cantidad = 0;
     }
-    return condiciones == 2;
+    return condicionDos && condicionTres;
 }
 
 int tienePoker(int dados[])
@@ -344,7 +345,7 @@ int main()
     int puntuacionJugador2 = 0;
     srand(time(0));
 
-    printf("¡Hola!, bienvenido al juego de la Generala!\n");
+    printf("¡Hola!, ¡bienvenido al juego de la Generala!\n");
     do
     {
         printf("Elija la cantidad de jugadores (1 o 2):\n");
@@ -362,17 +363,18 @@ int main()
         if (i == 1)
         {
             scanf("%s", jugador1);
-            printf("Bienvenido %s!\n", jugador1);
+            printf("¡Bienvenido %s!\n", jugador1);
             printf("\n");
         }
         else
         {
             scanf("%s", jugador2);
-            printf("Bienvenido %s!\n", jugador2);
+            printf("¡Bienvenido %s!\n", jugador2);
             printf("\n");
         }
     }
 
+    //Inicio juego
     for (int i = 1; i <= (cantidadJugadores == 1 ? TURNOS_MAX : TURNOS_MAX_DOBLE); i++)
     {
         lanzamientosRestantes = LANZAMIENTOS_MAX;
@@ -381,7 +383,9 @@ int main()
         } else {
             turnosPasadosJugador2++;
         }
-        printf("%s: Turno %d/%d.\n", turnoJugador1 ? jugador1 : jugador2, turnoJugador1 ? turnosPasadosJugador1 : turnosPasadosJugador2, TURNOS_MAX);
+        printf("Juega %s:\n", turnoJugador1 ? jugador1 : jugador2);
+        printf("Turno %d/%d.\n", turnoJugador1 ? turnosPasadosJugador1 : turnosPasadosJugador2, TURNOS_MAX);
+
         printf("Arrojando dados...\n");
         for (int i = 0; i < DADOS_MAX; i++)
         {
@@ -389,7 +393,7 @@ int main()
             mostrarDado(i + 1, dadosActuales[i]);
         }
         lanzamientosRestantes--;
-        printf("Lanzamientos restantes: %d \n", lanzamientosRestantes);
+        //OPCIONES
         do
         {
             printf("Cuántos dados desea relanzar? (0 = ninguno)\n");
@@ -422,6 +426,12 @@ int main()
                     {
                         printf("Ingrese el número de dado que quiere relanzar (%d/%d) \n", i + 1, cantidadARelanzar);
                         scanf("%d", &dadosReemplazos[i]);
+                        if (dadosReemplazos[i] < 0 || dadosReemplazos[i] > DADOS_MAX)
+                        {
+                            printf("Ingrese una cantidad correcta!! (1 a %d)\n", DADOS_MAX);
+                            i--;
+                            continue;
+                        }
                     }
                     // Reemplazar dados seleccionados
                     printf("Relanzando dados...\n");
@@ -436,7 +446,7 @@ int main()
                 {
                     mostrarDado(i + 1, dadosActuales[i]);
                 }
-                // Lanzamientos restantes:
+                //Mostrar lanzamientos restantes
                 lanzamientosRestantes--;
                 if (lanzamientosRestantes == 0)
                 {
@@ -455,7 +465,7 @@ int main()
         } else {
             mostrarCategorias(dadosActuales, categoriasUsadasJugador2, &generalaDobleJugador2);
         }
-        printf("Qué desea hacer?:\n");
+        printf("\n¿Qué desea hacer?:\n");
         scanf("%d", &opcion);
         if (turnoJugador1)
         {
@@ -485,9 +495,18 @@ int main()
         for (int i = 0; i < TURNOS_MAX; i++)
         {
             printf("Categoria %d tiene %d puntos.\n", i, tablaPuntajesJugador2[i]);
-        } 
+        }
+        separador();
+        printf("RESULTADO FINAL:\n");
+        if(puntuacionJugador1 > puntuacionJugador2){
+            printf("El GANADOR es: %s. ¡Felicitaciones!\n", jugador1);
+        } else if(puntuacionJugador1 < puntuacionJugador2){
+            printf("El GANADOR es: %s. ¡Felicitaciones!\n", jugador2);
+        } else {
+            printf("\n El resultado de la partida es EMPATE.\n");
+        }
     }
-    separador();
+    
     printf("Fin.\n");
 
     return 0;
