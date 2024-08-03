@@ -14,8 +14,36 @@
 #define DADOS_MAX 5
 #define USADO_VALUE 1
 #define LIBRE_VALUE 0
+#define SEPARADOR printf("-------------------\n");
 
 // Funciones útiles
+
+void imprimirCategoria(int index)
+{
+    switch (index)
+    {
+    case 0 ... 5:
+        printf("%d", index);
+        break;
+    case 6:
+        printf("ESCALERA");
+        break;
+    case 7:
+        printf("FULL");
+        break;
+    case 8:
+        printf("PÓKER");
+        break;
+    case 9:
+        printf("GENERALA");
+        break;
+    case 10:
+        printf("GENERALA DOBLE");
+        break;
+    default:
+        break;
+    }
+}
 
 void anotarCategoria(int categoria, int tablaPuntajes[], int puntaje)
 {
@@ -29,14 +57,16 @@ int arrojarDado()
     return dadoRandom;
 }
 
+//SOLO PARA TESTEAR GENERALA DOBLE
+int sacarGenerala()
+{
+    int dadoRandom = 6;
+    return dadoRandom;
+}
+
 void mostrarDado(int dadoId, int dado)
 {
     printf("- Dado %d: %d \n", dadoId, dado);
-}
-
-void separador()
-{
-    printf("-------------------\n");
 }
 
 void ordenarDados(int dados[])
@@ -74,10 +104,10 @@ int tieneFull(int dados[])
     int cantidad = 0;
     int condicionDos = 0;
     int condicionTres = 0;
-    for (int i = 1; i <= DADOS_MAX; i++)
+    for (int i = 1; i <=6; i++)
     {
         cantidad = contarNumero(dados, i);
-        if (cantidad == 2 && condicionDos == 0)
+        if (cantidad == 2)
         {
             condicionDos = 1;
         }
@@ -85,42 +115,22 @@ int tieneFull(int dados[])
         {
             condicionTres = 1;
         }
-        cantidad = 0;
     }
     return condicionDos && condicionTres;
 }
 
 int tienePoker(int dados[])
 {
-    int cuenta = 0;
-
-    for (int j = 0; j <= 1; j++)
+    int cantidad = 0;
+    for (int i = 1; i <=6; i++)
     {
-        for (int i = 0; i < DADOS_MAX; i++)
+        cantidad = contarNumero(dados, i);
+        if (cantidad == 4)
         {
-            if (j == i)
-            {
-                continue;
-            }
-            if (dados[j] == dados[i])
-            {
-                cuenta++;
-            }
-            if (cuenta == 3)
-            {
-                break;
-            }
-        }
-        if (cuenta == 3)
-        {
-            break;
-        }
-        else
-        {
-            cuenta = 0;
+            return 1;
         }
     }
-    return cuenta == 3;
+    return 0;
 }
 
 int tieneGenerala(int dados[])
@@ -224,7 +234,7 @@ void mostrarCategorias(int dados[], int categoriasUsadas[], int *generalaDoble)
                 }
                 break;
             case 10:
-                if (tieneGenerala(dados) && generalaDoble)
+                if (tieneGenerala(dados) && *generalaDoble)
                 {
                     printf("Anotarse ");
                 }
@@ -281,12 +291,16 @@ void procesarCategorias(int dados[], int categoriasUsadas[], int tablaPuntajes[]
                     if (tieneGenerala(dados))
                     {
                         puntaje = GENERALA_VALUE;
+                        *generalaDoble = 1;
+                    } else {
+                        *generalaDoble = 0;
                     }
                     break;
                 case 10:
-                    if (tieneGenerala(dados) && generalaDoble)
+                    if (tieneGenerala(dados) && *generalaDoble)
                     {
                         puntaje = GENERALA_DOBLE_VALUE;
+                        *generalaDoble = 0;
                     }
                     break;
                 default:
@@ -297,6 +311,24 @@ void procesarCategorias(int dados[], int categoriasUsadas[], int tablaPuntajes[]
             }
         }
     }
+    
+}
+
+int validarOpcion(int categoriasUsadas[], int opcion){
+    int cuenta = 0;
+    int coincidencia = 0;
+    for (int i = 0; i < 11; i++)
+    {
+        if (!categoriasUsadas[i])
+        {
+            cuenta++;
+            if (cuenta == opcion){
+                coincidencia = 1;
+                return coincidencia;
+            }
+        }
+    }
+    return coincidencia;
 }
 
 int contarPuntos(int categorias[])
@@ -310,40 +342,15 @@ int contarPuntos(int categorias[])
     return puntuacion;
 }
 
-void imprimirCategoria(int index)
-{
-    switch (index)
-    {
-    case 0 ... 5:
-        printf("%d", index);
-        break;
-    case 6:
-        printf("ESCALERA");
-        break;
-    case 7:
-        printf("FULL");
-        break;
-    case 8:
-        printf("PÓKER");
-        break;
-    case 9:
-        printf("GENERALA");
-        break;
-    case 10:
-        printf("GENERALA DOBLE");
-        break;
-    default:
-        break;
-    }
-}
-
 int main()
 {
     int cantidadJugadores = 1;
     int turnoJugador1 = 1;
     int lanzamientosRestantes = LANZAMIENTOS_MAX;
     int cantidadARelanzar = 0;
-    int dadosActuales[DADOS_MAX];
+    //int dadosActuales[DADOS_MAX];
+    //DADOS TEST
+    int dadosActuales[DADOS_MAX] = {6,6,6,6,6};
     char jugador1[21] = "";
     char jugador2[21] = "";
     int opcion = 0;
@@ -373,6 +380,7 @@ int main()
     int categoriasUsadasJugador2[TURNOS_MAX] = {LIBRE_VALUE, LIBRE_VALUE, LIBRE_VALUE, LIBRE_VALUE, LIBRE_VALUE, LIBRE_VALUE, LIBRE_VALUE, LIBRE_VALUE, LIBRE_VALUE, LIBRE_VALUE, LIBRE_VALUE};
     int puntuacionJugador1 = 0;
     int puntuacionJugador2 = 0;
+    int opcionValida = 0;
     srand(time(0));
 
     printf("¡Hola!, ¡bienvenido al juego de la Generala!\n");
@@ -387,6 +395,7 @@ int main()
         }
     } while (cantidadJugadores != 1 && cantidadJugadores != 2);
 
+    //REGISTRO
     for (int i = 1; i <= cantidadJugadores; i++)
     {
         printf("Ingrese el nombre del jugador %d:\n", i);
@@ -416,6 +425,7 @@ int main()
         {
             turnosPasadosJugador2++;
         }
+        SEPARADOR
         printf("Juega %s:\n", turnoJugador1 ? jugador1 : jugador2);
         printf("Turno %d/%d.\n", turnoJugador1 ? turnosPasadosJugador1 : turnosPasadosJugador2, TURNOS_MAX);
 
@@ -450,9 +460,9 @@ int main()
                 }
                 else
                 {
-                    separador();
+                    SEPARADOR
                     printf("SELECCIONAR DADOS\n");
-                    separador();
+                    SEPARADOR
                     // Seleccionar dados
                     int dadosReemplazos[cantidadARelanzar];
                     for (int i = 0; i < cantidadARelanzar; i++)
@@ -473,7 +483,7 @@ int main()
                         dadosActuales[dadosReemplazos[i] - 1] = arrojarDado();
                     }
                 }
-                separador();
+                SEPARADOR
                 // Mostrar dados actualizados
                 for (int i = 0; i < DADOS_MAX; i++)
                 {
@@ -492,7 +502,7 @@ int main()
             }
         } while (lanzamientosRestantes > 0 && cantidadARelanzar != 0);
 
-        separador();
+        SEPARADOR
         if (turnoJugador1)
         {
             mostrarCategorias(dadosActuales, categoriasUsadasJugador1, &generalaDobleJugador1);
@@ -501,8 +511,23 @@ int main()
         {
             mostrarCategorias(dadosActuales, categoriasUsadasJugador2, &generalaDobleJugador2);
         }
-        printf("\n¿Qué desea hacer?:\n");
-        scanf("%d", &opcion);
+
+        do{
+            printf("\n¿Qué desea hacer?:\n");
+            scanf("%d", &opcion);
+            
+            if (turnoJugador1)
+            {
+                opcionValida = validarOpcion(categoriasUsadasJugador1, opcion);
+            } else {
+                opcionValida = validarOpcion(categoriasUsadasJugador2, opcion);
+            }
+            
+            if(!opcionValida){
+                printf("Ingrese una opción correcta!\n");
+            }
+        }while (!opcionValida);
+        
         if (turnoJugador1)
         {
             procesarCategorias(dadosActuales, categoriasUsadasJugador1, tablaPuntajesJugador1, &generalaDobleJugador1, opcion);
@@ -512,7 +537,6 @@ int main()
             procesarCategorias(dadosActuales, categoriasUsadasJugador2, tablaPuntajesJugador2, &generalaDobleJugador2, opcion);
         }
 
-        separador();
         // Cambio de turno
         if (cantidadJugadores > 1)
         {
@@ -520,25 +544,32 @@ int main()
         }
     }
 
+    //RESULTADOS
     puntuacionJugador1 = contarPuntos(tablaPuntajesJugador1);
-    printf("Puntuación total de %s: %d.\n", jugador1, puntuacionJugador1);
+    SEPARADOR
+    printf("RESULTADOS:\n");
+    SEPARADOR
+    printf("Jugador: %s\n", jugador1);
+    SEPARADOR
     for (int i = 0; i < TURNOS_MAX; i++)
     {
         printf("Categoria ");
         imprimirCategoria(i);
         printf(" tiene %d puntos.\n", tablaPuntajesJugador1[i]);
     }
-    separador();
+    printf("Puntuación total de %s: %d.\n", jugador1, puntuacionJugador1);
     if (cantidadJugadores == 2)
     {
-        separador();
         puntuacionJugador2 = contarPuntos(tablaPuntajesJugador2);
-        printf("Puntuación total de %s: %d.\n", jugador2, puntuacionJugador2);
+        SEPARADOR
+        printf("Jugador: %s\n", jugador2);
+        SEPARADOR
         for (int i = 0; i < TURNOS_MAX; i++)
         {
             printf("Categoria %d tiene %d puntos.\n", i, tablaPuntajesJugador2[i]);
         }
-        separador();
+        printf("Puntuación total de %s: %d.\n", jugador2, puntuacionJugador2);
+        SEPARADOR
         printf("RESULTADO FINAL:\n");
         if (puntuacionJugador1 > puntuacionJugador2)
         {
@@ -553,8 +584,6 @@ int main()
             printf("\n El resultado de la partida es EMPATE.\n");
         }
     }
-
-    printf("Fin.\n");
-
+    
     return 0;
 }
