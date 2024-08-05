@@ -15,6 +15,7 @@
 #define USADO_VALUE 1
 #define LIBRE_VALUE 0
 #define SEPARADOR printf("-------------------\n");
+#define BREAKLINE print("\n");
 
 // Funciones útiles
 
@@ -311,7 +312,7 @@ void procesarCategorias(int dados[], int categoriasUsadas[], int tablaPuntajes[]
             }
         }
     }
-    
+
 }
 
 int validarOpcion(int categoriasUsadas[], int opcion){
@@ -350,7 +351,7 @@ void mostrarPuntuacion(int tablaPuntajesJugador[], char nombreJugador[]){
     {
         printf("Categoria ");
         imprimirCategoria(i);
-        printf(" tiene %d puntos.\n", tablaPuntajesJugador[i]);
+        printf(": %d puntos.\n", tablaPuntajesJugador[i]);
     }
     SEPARADOR
     printf("Puntuación total de %s: %d.\n", nombreJugador, puntuacionJugador);
@@ -545,19 +546,19 @@ int main()
         do{
             printf("\n¿Qué desea hacer?:\n");
             scanf("%d", &opcion);
-            
+
             if (turnoJugador1)
             {
                 opcionValida = validarOpcion(categoriasUsadasJugador1, opcion);
             } else {
                 opcionValida = validarOpcion(categoriasUsadasJugador2, opcion);
             }
-            
+
             if(!opcionValida){
                 printf("Ingrese una opción correcta!\n");
             }
         }while (!opcionValida);
-        
+
         if (turnoJugador1)
         {
             procesarCategorias(dadosActuales, categoriasUsadasJugador1, tablaPuntajesJugador1, &generalaDobleJugador1, opcion);
@@ -575,17 +576,20 @@ int main()
     }
 
     //RESULTADOS
+    BREAKLINE
+    BREAKLINE
     SEPARADOR
     printf("RESULTADOS:\n");
     SEPARADOR
     mostrarPuntuacion(tablaPuntajesJugador1, jugador1);
     if (cantidadJugadores == 2)
     {
+        BREAKLINE
         SEPARADOR
         mostrarPuntuacion(tablaPuntajesJugador2, jugador2);
         SEPARADOR
         mostrarResultados(jugador1, jugador2, contarPuntos(tablaPuntajesJugador1), contarPuntos(tablaPuntajesJugador2));
     }
-    
+
     return 0;
 }
