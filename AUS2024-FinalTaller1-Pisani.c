@@ -15,7 +15,7 @@
 #define USADO_VALUE 1
 #define LIBRE_VALUE 0
 #define SEPARADOR printf("-------------------\n");
-#define BREAKLINE print("\n");
+#define BREAKLINE printf("\n");
 
 // Funciones útiles
 
@@ -136,20 +136,16 @@ int tienePoker(int dados[])
 
 int tieneGenerala(int dados[])
 {
-    int cuenta = 0;
-    for (int i = 0; i < DADOS_MAX - 1; i++)
+    int cantidad = 0;
+    for (int i = 1; i <=6; i++)
     {
-        if (dados[i] == dados[i + 1])
+        cantidad = contarNumero(dados, i);
+        if (cantidad == DADOS_MAX)
         {
-            cuenta++;
-            continue;
-        }
-        else
-        {
-            break;
+            return 1;
         }
     }
-    return cuenta == 4;
+    return 0;
 }
 
 int tieneEscalera(int dados[])
@@ -173,7 +169,6 @@ int tieneEscalera(int dados[])
 
 void mostrarCategorias(int dados[], int categoriasUsadas[], int *generalaDoble)
 {
-    // TODO revisar y testear Generala Doble
     int cuenta = 1;
 
     for (int i = 0; i < 6; i++)
@@ -248,7 +243,7 @@ void mostrarCategorias(int dados[], int categoriasUsadas[], int *generalaDoble)
                 break;
             }
             imprimirCategoria(i);
-            printf(".\n");
+            BREAKLINE
             cuenta++;
         }
     }
@@ -379,9 +374,7 @@ int main()
     int turnoJugador1 = 1;
     int lanzamientosRestantes = LANZAMIENTOS_MAX;
     int cantidadARelanzar = 0;
-    //int dadosActuales[DADOS_MAX];
-    //DADOS TEST
-    int dadosActuales[DADOS_MAX] = {6,6,6,6,6};
+    int dadosActuales[DADOS_MAX];
     char jugador1[21] = "";
     char jugador2[21] = "";
     int opcion = 0;
@@ -461,11 +454,21 @@ int main()
         printf("Turno %d/%d.\n", turnoJugador1 ? turnosPasadosJugador1 : turnosPasadosJugador2, TURNOS_MAX);
 
         printf("Arrojando dados...\n");
+        
         for (int i = 0; i < DADOS_MAX; i++)
         {
             dadosActuales[i] = arrojarDado();
             mostrarDado(i + 1, dadosActuales[i]);
         }
+        
+        /*
+        //Solo para testear GENERALA
+        for (int i = 0; i < DADOS_MAX; i++)
+        {
+            dadosActuales[i] = sacarGenerala();
+            mostrarDado(i + 1, dadosActuales[i]);
+        }
+        */
         lanzamientosRestantes--;
         // OPCIONES
         do
